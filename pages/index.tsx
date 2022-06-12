@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const perPage = 20;
-export default function Home({ data }: any) {
+export default function Home({ data, url }: any) {
   const [viewedCasts, setViewedCasts] = useState<any []>(data.casts.slice(0, perPage));
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -18,7 +18,7 @@ export default function Home({ data }: any) {
       setCurrentPage(currentPage  + 1);
   };
 
-  const copyRSSLink = () => copyLink(`https://${process.env.VERCEL_URL}/api/rss`, 'gm! rss feed link copied.');
+  const copyRSSLink = () => copyLink(`https://${url}/api/rss`, 'gm! rss feed link copied.');
   const copyEthAddress = () => copyLink(data.user.address,  'gm! Eethereum address copied.');
 
 return ( 
@@ -68,12 +68,13 @@ return (
   )
 }
 
-export async function getServerSideProps( ) {
+export async function getServerSideProps() {
   const data = await (await fetch(`https://${process.env.VERCEL_URL}/api/casts`)).json();
 
   return {
     props: {
       data,
+      url: process.env.VERCEL_URL
     },
   }
 }
